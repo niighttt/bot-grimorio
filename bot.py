@@ -273,6 +273,16 @@ async def help_grimorio(ctx):
     embed.set_footer(text="Bot desliga das 1h às 8h BRT pra economizar horas")
     await ctx.send(embed=embed)
 
+@bot.command()
+async def brabo(ctx, membro: discord.Member = None):
+    if membro:
+        if membro.id == ctx.author.id:
+            await ctx.send(f'😎 {ctx.author.mention} mandou um salve! Niight tá na área!')
+        else:
+            await ctx.send(f'🔥 O niight é melhor que você, {membro.mention} 😂☠️ SE CURVA PRO PATRÃO')
+    else:
+        await ctx.send(f'😎 {ctx.author.mention} mandou um salve! Niight tá na área!')
+
 @setar_chance.error
 @set_roleta.error
 @set_canal_entrada.error
