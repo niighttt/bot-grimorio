@@ -203,7 +203,7 @@ async def rank_4_trevos(ctx):
         description="Os escolhidos pelo grimório lendário:",
         color=0xFFD700 # Dourado - barra lateral
     )
-    embed.set_thumbnail(url="https://i.imgur.com/trevo_dourado.png") # TROCA AQUI se quiser
+    embed.set_thumbnail(url="https://tse2.mm.bing.net/th/id/OIP.Tu6uvm98fJxGlPrOFI9UNgHaHV?r=0&rs=1&pid=ImgDetMain&o=7&rm=3") # TROCA AQUI se quiser
 
     texto_rank = ""
     for i, (user_id, _) in enumerate(lendarios[:10], 1):
