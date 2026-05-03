@@ -273,7 +273,7 @@ async def help_grimorio(ctx):
     embed.set_footer(text="Bot desliga das 1h às 8h BRT pra economizar horas")
     await ctx.send(embed=embed)
 
-@bot.command()
+@bot.command(name="brabo")
 async def brabo(ctx, membro: discord.Member = None):
     if membro:
         if membro.id == ctx.author.id:
