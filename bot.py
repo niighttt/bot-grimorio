@@ -289,15 +289,7 @@ async def brabo(ctx, membro: discord.Member = None):
 async def admin_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         await ctx.send("Só admin pode usar esse comando.")
-        import discord
-from discord.ext import commands
-import time
-import random
-import re
-
-intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix='/', intents=intents)
+        
 
 # Guarda quem tá amaldiçoado: {user_id: {"tipo": "", "expira": timestamp}}
 maldicoes_ativas = {}
@@ -346,7 +338,7 @@ TIPOS_MALDICAO = {
     }
 }
 
-@bot.command()
+@bot.command(amaldicoar)
 @commands.has_permissions(manage_messages=True) # Só admin/mods usam
 async def maldicao(ctx, membro: discord.Member, tipo: str = None):
     # Se não escolheu tipo, sorteia um
