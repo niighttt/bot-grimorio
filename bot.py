@@ -7,6 +7,7 @@ import os
 import asyncio
 from datetime import datetime
 import pytz
+import time
 
 # ========== CONFIGURAÇÃO INICIAL ==========
 intents = discord.Intents.default()
