@@ -291,54 +291,6 @@ async def admin_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         await ctx.send("Só admin pode usar esse comando.")
 
-# ========== MALDIÇÕES ==========
-maldicoes_ativas = {}
-TIPOS_MALDICAO = {
-    "latim": {"nome": "Maldição do Latim", "transformar": lambda txt: txt + "us dominus vobiscum"},
-    "caipira": {"nome": "Maldição do Capiau", "transformar": lambda txt: txt + " uai sô"},
-    "oposto": {"nome": "Maldição do Contrário", "transformar": lambda txt: txt.replace("sim", "não").replace("bom", "ruim")},
-    "sussurro": {"nome": "Maldição do Sussurro", "transformar": lambda txt: f"||{txt}||"},
-    "emoji": {"nome": "Maldição do Emoji", "transformar": lambda txt: " ".join([random.choice(["💀","👻","🔮","🐸","💨","🤡"]) for _ in txt.split()])},
-    "gago": {"nome": "Maldição do Gago", "transformar": lambda txt: " ".join([w[0] + "-" + w if len(w) > 2 else w for w in txt.split()])},
-    "grito": {"nome": "Maldição do Berro", "transformar": lambda txt: txt.upper() + "!!!"},
-    "pirata": {"nome": "Maldição do Marujo", "transformar": lambda txt: txt.replace("você", "marujo").replace("sim", "arr") + " YARRR 🏴‍☠️"}
-}
-
-@bot.command(name="maldicao")
-@commands.has_permissions(manage_messages=True)
-async def maldicao(ctx, membro: discord.Member, tipo: str = None):
-    if tipo is None or tipo not in TIPOS_MALDICAO:
-        tipo = random.choice(list(TIPOS_MALDICAO.keys()))
-    maldicoes_ativas[membro.id] = {"tipo": tipo, "expira": time.time() + 3600}
-    await ctx.send(f"{membro.mention} foi amaldiçoado com {tipo}!")
-
-@bot.command(name="desfazer")
-@commands.has_permissions(manage_messages=True)
-async def desfazer(ctx, membro: discord.Member):
-    if membro.id in maldicoes_ativas:
-        del maldicoes_ativas[membro.id]
-        await ctx.send(f"{membro.mention} foi libertado!")
-    else:
-        await ctx.send("Não tá amaldiçoado.")
-
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    if message.author.id in maldicoes_ativas:
-        dados = maldicoes_ativas[message.author.id]
-        if time.time() > dados["expira"]:
-            del maldicoes_ativas[message.author.id]
-        else:
-            await message.delete()
-            tipo = dados["tipo"]
-            texto = TIPOS_MALDICAO[tipo]["transformar"](message.content)
-            webhook = await message.channel.create_webhook(name=message.author.display_name)
-            await webhook.send(texto, username=f"{message.author.display_name} Amaldiçoado", avatar_url=message.author.avatar.url)
-            await webhook.delete()
-            return
-    await bot.process_commands(message)
-
 import os
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
