@@ -440,7 +440,33 @@ async def set_roleta(ctx, alvo, quantidade: int):
 
         return
 
-    @bot.command(name="tirar")
+    # ===== CASO: UM USUÁRIO =====
+    membro = ctx.guild.get_member(
+        int(alvo.replace("<@", "").replace(">", ""))
+    )
+
+    if not membro:
+        await ctx.send("Usuário inválido ou não encontrado.")
+        return
+
+    user_data = get_user_data(membro.id)
+    user_data["roletas"] = quantidade
+
+    salvar_db()
+
+    await ctx.send(
+        embed=discord.Embed(
+            title="🎲 Roletas Atualizadas",
+            description=(
+                f"{membro.mention} agora possui "
+                f"**{quantidade}** roleta(s)!"
+            ),
+            color=0x2ecc71
+        )
+    )
+
+
+@bot.command(name="tirar")
 @commands.has_permissions(administrator=True)
 async def tirar_grimorio(ctx, alvo):
 
@@ -502,29 +528,6 @@ async def tirar_grimorio(ctx, alvo):
     )
 
     await ctx.send(embed=embed)
-
-    # ===== CASO: UM USUÁRIO =====
-    membro = ctx.guild.get_member(int(alvo.replace("<@", "").replace(">", "")))
-
-    if not membro:
-        await ctx.send("Usuário inválido ou não encontrado.")
-        return
-
-    user_data = get_user_data(membro.id)
-    user_data["roletas"] = quantidade
-
-    salvar_db()
-
-    await ctx.send(
-        embed=discord.Embed(
-            title="🎲 Roletas Atualizadas",
-            description=(
-                f"{membro.mention} agora possui "
-                f"**{quantidade}** roleta(s)!"
-            ),
-            color=0x2ecc71
-        )
-    )
     
 @bot.command(name="setcanalentrada")
 @commands.has_permissions(administrator=True)
