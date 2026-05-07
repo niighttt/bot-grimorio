@@ -404,31 +404,64 @@ async def setar_chance(ctx, nova_chance: int):
 
 @bot.command(name="setroleta")
 @commands.has_permissions(administrator=True)
-async def set_roleta(
-    ctx,
-    membro: discord.Member,
-    quantidade: int
-):
+async def set_roleta(ctx, alvo, quantidade: int):
 
     if quantidade < 0:
         await ctx.send("Não pode número negativo.")
         return
 
-    if quantidade > 100:
-        await ctx.send("Máximo permitido: 100")
+    # ===== CASO: TODO MUNDO =====
+    if alvo.lower() == "all":
+
+        membros_afetados = 0
+
+        for membro in ctx.guild.members:
+            if membro.bot:
+                continue
+
+            user_data = get_user_data(membro.id)
+            user_data["roletas"] = quantidade
+            membros_afetados += 1
+
+        salvar_db()
+
+        await ctx.send(
+            content="@everyone",
+            embed=discord.Embed(
+                title="🎲 ROLETAS GLOBAL",
+                description=(
+                    f"Todos os membros receberam **{quantidade} roletas!**\n\n"
+                    f"👥 Total afetados: {membros_afetados}"
+                ),
+                color=0x2ecc71
+            )
+        )
+
+        return
+
+    # ===== CASO: UM USUÁRIO =====
+    membro = ctx.guild.get_member(int(alvo.replace("<@", "").replace(">", "")))
+
+    if not membro:
+        await ctx.send("Usuário inválido ou não encontrado.")
         return
 
     user_data = get_user_data(membro.id)
-
     user_data["roletas"] = quantidade
 
     salvar_db()
 
     await ctx.send(
-        f"🎲 {membro.mention} agora possui "
-        f"**{quantidade}** roleta(s)."
+        embed=discord.Embed(
+            title="🎲 Roletas Atualizadas",
+            description=(
+                f"{membro.mention} agora possui "
+                f"**{quantidade}** roleta(s)!"
+            ),
+            color=0x2ecc71
+        )
     )
-
+    
 @bot.command(name="setcanalentrada")
 @commands.has_permissions(administrator=True)
 async def set_canal_entrada(
