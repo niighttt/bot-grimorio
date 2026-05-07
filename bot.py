@@ -607,7 +607,7 @@ async def brabo(ctx, membro: discord.Member = None):
 @setar_chance.error
 @set_roleta.error
 @set_canal_entrada.error
-@tirar.error
+@tirar_grimorio.error
 async def admin_error(ctx, error):
 
     if isinstance(error, commands.MissingPermissions):
