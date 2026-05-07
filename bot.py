@@ -213,13 +213,14 @@ async def ping(ctx):
     )
 
     await ctx.send(embed=embed)
-
+    
 @bot.command(name="roleta")
-async def roletar_grimorio(ctx, membro: discord.Member = None):
+async def roletar_grimorio(ctx):
+
     if await verificar_horario(ctx):
         return
 
-    alvo = membro or ctx.author
+    alvo = ctx.author
     user_data = get_user_data(alvo.id)
 
     if user_data["roletas"] <= 0:
@@ -439,6 +440,69 @@ async def set_roleta(ctx, alvo, quantidade: int):
 
         return
 
+    @bot.command(name="tirar")
+@commands.has_permissions(administrator=True)
+async def tirar_grimorio(ctx, alvo):
+
+    # ===== TODOS =====
+    if alvo.lower() == "all":
+
+        removidos = 0
+
+        for membro in ctx.guild.members:
+
+            if membro.bot:
+                continue
+
+            user_data = get_user_data(membro.id)
+
+            if user_data["grimorio"] is not None:
+                user_data["grimorio"] = None
+                removidos += 1
+
+        salvar_db()
+
+        embed = discord.Embed(
+            title="🗑️ Grimórios Removidos",
+            description=(
+                f"Todos os grimórios foram removidos.\n\n"
+                f"👥 Total afetados: {removidos}"
+            ),
+            color=0xe74c3c
+        )
+
+        await ctx.send(
+            content="@everyone",
+            embed=embed
+        )
+
+        return
+
+    # ===== USUÁRIO =====
+    membro = ctx.guild.get_member(
+        int(alvo.replace("<@", "").replace(">", ""))
+    )
+
+    if not membro:
+        await ctx.send("Usuário inválido.")
+        return
+
+    user_data = get_user_data(membro.id)
+
+    user_data["grimorio"] = None
+
+    salvar_db()
+
+    embed = discord.Embed(
+        title="🗑️ Grimório Removido",
+        description=(
+            f"O grimório de {membro.mention} foi removido."
+        ),
+        color=0xe74c3c
+    )
+
+    await ctx.send(embed=embed)
+
     # ===== CASO: UM USUÁRIO =====
     membro = ctx.guild.get_member(int(alvo.replace("<@", "").replace(">", "")))
 
@@ -504,6 +568,7 @@ async def help_grimorio(ctx):
             "`-setarchance 30`\n"
             "`-setroleta @user 3`\n"
             "`-setcanalentrada #canal`"
+            "`-tirar @user`/"
         ),
         inline=False
     )
@@ -539,6 +604,7 @@ async def brabo(ctx, membro: discord.Member = None):
 @setar_chance.error
 @set_roleta.error
 @set_canal_entrada.error
+@tirar.error
 async def admin_error(ctx, error):
 
     if isinstance(error, commands.MissingPermissions):
