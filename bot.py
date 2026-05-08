@@ -560,7 +560,7 @@ async def help_grimorio(ctx):
             "`-rank`\n"
             "`-chances`\n"
             "`-ping`\n"
-            "`-brabo`"
+            
         ),
         inline=False
     )
@@ -581,27 +581,6 @@ async def help_grimorio(ctx):
     )
 
     await ctx.send(embed=embed)
-
-@bot.command(name="brabo")
-async def brabo(ctx, membro: discord.Member = None):
-
-    if membro:
-
-        if membro.id == ctx.author.id:
-            await ctx.send(
-                f"😎 {ctx.author.mention} mandou um salve!"
-            )
-
-        else:
-            await ctx.send(
-                f"🔥 O niight é melhor que você, "
-                f"{membro.mention} 😂☠️"
-            )
-
-    else:
-        await ctx.send(
-            f"😎 {ctx.author.mention} mandou um salve!"
-        )
 
 # ========== ERROS ==========
 @setar_chance.error
