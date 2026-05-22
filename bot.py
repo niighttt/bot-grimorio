@@ -19,6 +19,17 @@ bot = commands.Bot(
     command_prefix="-",
     intents=intents,
     help_command=None
+    
+)
+
+ARQUIVO_DB = "grimorios.json"
+ARQUIVO_CONFIG = "config.json"
+ARQUIVO_CONFIG_ENTRADA = "config_entrada.json"
+
+invites_cache = {}
+scheduler_rodando = False
+HORARIO_OFF = False
+
 
 # ========== DATABASE ==========
 if os.path.exists(ARQUIVO_DB):
