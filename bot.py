@@ -584,12 +584,40 @@ async def help_grimorio(ctx):
 
     await ctx.send(embed=embed)
 
+@bot.command(name="addgrimorio")
+@commands.has_permissions(administrator=True)
+async def add_grimorio(ctx, membro: discord.Member, tipo: int):
+
+    if tipo not in [3, 4]:
+        await ctx.send(
+            "❌ O grimório deve ser `3` ou `4`."
+        )
+        return
+
+    user_data = get_user_data(membro.id)
+
+    user_data["grimorio"] = f"{tipo} Trevos"
+
+    salvar_db()
+
+    embed = discord.Embed(
+        title="🍀 Grimório Adicionado",
+        description=(
+            f"{membro.mention} recebeu um grimório de "
+            f"**{tipo} Trevos**!"
+        ),
+        color=0xFFD700 if tipo == 4 else 0x95a5a6
+    )
+
+    await ctx.send(embed=embed)
+
 
 # ========== ERROS ==========
 @setar_chance.error
 @set_roleta.error
 @set_canal_entrada.error
 @tirar_grimorio.error
+@add_grimorio.error
 async def admin_error(ctx, error):
 
     if isinstance(error, commands.MissingPermissions):
