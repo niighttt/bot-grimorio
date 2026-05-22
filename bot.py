@@ -610,6 +610,10 @@ async def add_grimorio(ctx, membro: discord.Member, tipo: int):
 
     await ctx.send(embed=embed)
 
+@bot.command(name="viado")
+async def viado(ctx):
+    await ctx.send("AINN MEU SAOO PAULOO VEYRRR")
+
 # ========== ERROS ==========
 @setar_chance.error
 @set_roleta.error
